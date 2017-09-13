@@ -1,25 +1,41 @@
-var colors = genarateRandomColors(6);
+var defaultBackgroundColor = "#232323";
 
+var colors = genarateRandomColors(6);
 var squares = document.querySelectorAll(".square");
 var pickedColor = pickColor();
 var colorDisplay = document.getElementById("colorDisplay");
 var messageDisplay = document.getElementById("message");
 var h1 = document.querySelector("h1");
+var resetButton = document.getElementById("reset");
 
-colorDisplay.textContent = pickedColor;
+resetGame(true);
 
-for (var i = 0; i < squares.length; i++) {
-  squares[i].style.backgroundColor = colors[i];
-  squares[i].addEventListener("click", function() {
-    var selectedColor = this.style.backgroundColor;
-    if (selectedColor === pickedColor) {
-      messageDisplay.textContent = "Correct!";
-      changeColors(pickedColor);
-    } else {
-      this.style.backgroundColor = "#232323";
-      messageDisplay.textContent = "Try again";
+resetButton.addEventListener("click", resetGame);
+
+function resetGame(initGame) {
+  colors = genarateRandomColors(6);
+  pickedColor = pickColor();
+  colorDisplay.textContent = pickedColor;
+  for (var i = 0; i < squares.length; i++) {
+    squares[i].style.backgroundColor = colors[i];
+    if (initGame) {
+      squares[i].addEventListener("click", colorClickHandler);
     }
-  })
+  }
+  h1.style.backgroundColor = defaultBackgroundColor;
+  resetButton.textContent = "New colors";
+}  
+
+function colorClickHandler() {
+  var selectedColor = this.style.backgroundColor;
+  if (selectedColor === pickedColor) {
+    messageDisplay.textContent = "Correct!";
+    changeColors(pickedColor);
+    resetButton.textContent = "Play again?";
+  } else {
+    this.style.backgroundColor = defaultBackgroundColor;
+    messageDisplay.textContent = "Try again";
+  }  
 }
 
 function changeColors(color) {
@@ -38,14 +54,14 @@ function genarateRandomColors(num) {
 }
 
 function pickColor() {
-  return colors[getRandomNumber(colors.length) + 1];
+  return colors[getRandomNumber(colors.length)];
 }
 
 function randomColor() {
-  var r = getRandomNumber(256);
-  var g = getRandomNumber(256);
-  var b = getRandomNumber(256);
-  return "rgb(" + r + ", " + g + ", " + b + ")";
+  return "rgb(" + 
+    getRandomNumber(256) + ", " + 
+    getRandomNumber(256) + ", " + 
+    getRandomNumber(256) + ")";
 }
 
 function getRandomNumber(upperBound) {
