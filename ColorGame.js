@@ -1,27 +1,63 @@
 var defaultBackgroundColor = "#232323";
+var numberOfSquares = 6;
 
-var colors = genarateRandomColors(6);
-var squares = document.querySelectorAll(".square");
+var colors = genarateRandomColors(numberOfSquares);
 var pickedColor = pickColor();
+
+var h1 = document.querySelector("h1");
+var squares = document.querySelectorAll(".square");
 var colorDisplay = document.getElementById("colorDisplay");
 var messageDisplay = document.getElementById("message");
-var h1 = document.querySelector("h1");
 var resetButton = document.getElementById("reset");
+var easyButton = document.getElementById("easyBtn");
+var hardButton = document.getElementById("hardBtn");
 
-resetGame(true);
-
-resetButton.addEventListener("click", resetGame);
-
-function resetGame(initGame) {
-  colors = genarateRandomColors(6);
-  pickedColor = pickColor();
-  colorDisplay.textContent = pickedColor;
+resetButton.addEventListener("click", function() {
+  resetColors();
   for (var i = 0; i < squares.length; i++) {
     squares[i].style.backgroundColor = colors[i];
-    if (initGame) {
-      squares[i].addEventListener("click", colorClickHandler);
-    }
+  } 
+  messageDisplay.textContent = "";
+});
+
+easyButton.addEventListener("click", function() {
+  numberOfSquares = 3;
+  this.classList.add("selected");
+  hardButton.classList.remove("selected");
+
+  resetColors();
+  for (var i = 0; i < squares.length; i++) {
+    if (i < 3)
+      squares[i].style.backgroundColor = colors[i];
+    else
+      squares[i].style.display = "none";  
   }
+});
+
+hardButton.addEventListener("click", function() {
+  numberOfSquares = 6;
+  this.classList.add("selected");
+  easyButton.classList.remove("selected");
+
+  resetColors();
+  for (var i = 0; i < squares.length; i++) {
+    squares[i].style.backgroundColor = colors[i];
+    squares[i].style.display = "block";  
+  }
+});
+
+// initial state
+resetColors();
+for (var i = 0; i < squares.length; i++) {
+  squares[i].style.backgroundColor = colors[i];
+  squares[i].addEventListener("click", colorClickHandler);
+}
+
+
+function resetColors() {
+  colors = genarateRandomColors(numberOfSquares);
+  pickedColor = pickColor();
+  colorDisplay.textContent = pickedColor;
   h1.style.backgroundColor = defaultBackgroundColor;
   resetButton.textContent = "New colors";
 }  
