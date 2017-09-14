@@ -47,7 +47,9 @@ hardButton.addEventListener("click", function() {
 });
 
 // initial state
-resetColors();
+colorDisplay.textContent = pickedColor;
+resetButton.textContent = "New colors";
+
 for (var i = 0; i < squares.length; i++) {
   squares[i].style.backgroundColor = colors[i];
   squares[i].addEventListener("click", colorClickHandler);
@@ -58,7 +60,7 @@ function resetColors() {
   colors = genarateRandomColors(numberOfSquares);
   pickedColor = pickColor();
   colorDisplay.textContent = pickedColor;
-  h1.style.backgroundColor = defaultBackgroundColor;
+  h1.style.backgroundColor = "steelblue";
   resetButton.textContent = "New colors";
 }  
 
