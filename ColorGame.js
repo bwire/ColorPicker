@@ -14,35 +14,38 @@
         modeButtons: document.querySelectorAll(".mode") 
       }, 
 
-      setUpModeButtons: function() {
-        for (var i = 0; i < this.selectors.modeButtons.length; i++) {
-          this.selectors.modeButtons[i].addEventListener("click", (function() {
-            game = this;
-            return function() {
-              for (var j = 0; j < game.selectors.modeButtons.length; j++) {
-                game.selectors.modeButtons[j].classList.remove("selected");    
-              }
-              this.classList.add("selected"); 
-              this.textContent === "Easy" ? game.numberOfSquares = 3 : game.numberOfSquares = 6;
-              game.resetColors(); 
-            }
-          }).call(this));
-        };
-      },
-
-      setUpResetButton: function() {
-        this.selectors.resetButton.addEventListener("click", (function() {
-          game = this;
-          return function() {
-            game.resetColors();
+      getModeButtonListener: function() {
+        game = this;
+        return function() {
+          for (var j = 0; j < game.selectors.modeButtons.length; j++) {
+            game.selectors.modeButtons[j].classList.remove("selected");    
           }
-        }).call(this));
+          this.classList.add("selected"); 
+          this.textContent === "Easy" ? game.numberOfSquares = 3 : game.numberOfSquares = 6;
+          game.resetColors(); 
+        }
       },
 
-      setUpSquareButtons: function() {
-        for (var i = 0; i < this.selectors.squares.length; i++) {
-          this.selectors.squares[i].addEventListener("click", this.colorClickHandler.call(this));
-        };
+      getResetButtonListener: function() {
+        game = this;
+        return function() {
+          game.resetColors();
+        }
+      },
+
+      getSquareButtonListener: function () {
+        game = this;
+        return function() {
+          var selectedColor = this.style.backgroundColor;
+          if (selectedColor === game.pickedColor) {
+            game.selectors.messageDisplay.textContent = "Correct!";
+            game.changeColors(game.pickedColor);
+            game.selectors.resetButton.textContent = "Play again?";
+          } else {
+            this.style.backgroundColor = game.defaultBackgroundColor;
+            game.selectors.messageDisplay.textContent = "Try again";
+          }  
+        }  
       },
 
       resetColors: function() {
@@ -61,21 +64,6 @@
           }
         }
       },  
-
-      colorClickHandler: (function(game) {
-        game = this;
-        return function() {
-          var selectedColor = this.style.backgroundColor;
-          if (selectedColor === game.pickedColor) {
-            game.selectors.messageDisplay.textContent = "Correct!";
-            game.changeColors(game.pickedColor);
-            game.selectors.resetButton.textContent = "Play again?";
-          } else {
-            this.style.backgroundColor = game.defaultBackgroundColor;
-            game.selectors.messageDisplay.textContent = "Try again";
-          }  
-        }  
-      }), 
 
       changeColors: function(color) {
         for (var i = 0; i < this.selectors.squares.length; i++) {
@@ -109,9 +97,16 @@
     };
 
     colorGame.start = function() {
-      this.setUpModeButtons();
-      this.setUpResetButton();
-      this.setUpSquareButtons();
+      // mode buttons
+      for (var i = 0; i < this.selectors.modeButtons.length; i++) {
+        this.selectors.modeButtons[i].addEventListener("click", this.getModeButtonListener());
+      };
+      // square buttons
+      for (var i = 0; i < this.selectors.squares.length; i++) {
+        this.selectors.squares[i].addEventListener("click", this.getSquareButtonListener());
+      };
+      // reset button
+      this.selectors.resetButton.addEventListener("click", this.getResetButtonListener());
       this.resetColors();
     };
 
